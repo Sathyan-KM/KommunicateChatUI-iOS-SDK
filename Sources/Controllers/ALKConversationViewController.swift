@@ -43,6 +43,15 @@ open class ALKConversationViewController: ALKBaseViewController, Localizable {
         manager.autocompletionDelegate = self
         return manager
     }()
+    
+    public lazy var autosuggestionManager: KMAutoSuggestionManager = {
+        let manager = KMAutoSuggestionManager(
+            textView: chatBar.textView,
+            tableview: autocompletionView
+        )
+        manager.autocompletionDelegate = self
+        return manager
+    }()
 
     public let autocompletionView: UITableView = {
         let tableview = UITableView(frame: CGRect.zero, style: .plain)
@@ -988,13 +997,19 @@ open class ALKConversationViewController: ALKBaseViewController, Localizable {
     }
 
     private func setupMemberMention() {
-        if configuration.isMemberMentionEnabled {
-            autocompleteManager.registerPrefix(
-                prefix: MessageMention.Prefix,
-                configuration: AutoCompleteItemConfiguration.memberMention,
-                cellType: MentionAutoCompleteCell.self
-            )
-        }
+//        if configuration.isMemberMentionEnabled {
+//            autocompleteManager.registerPrefix(
+//                prefix: MessageMention.Prefix,
+//                configuration: AutoCompleteItemConfiguration.memberMention,
+//                cellType: MentionAutoCompleteCell.self
+//            )
+//        }
+        
+        autosuggestionManager.registerPrefix(
+            prefix: MessageMention.Prefix,
+            configuration: AutoCompleteItemConfiguration.memberMention,
+            cellType: MentionAutoCompleteCell.self
+        )
     }
 
     // MARK: public Control Typing notification

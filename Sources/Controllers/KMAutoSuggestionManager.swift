@@ -133,53 +133,54 @@ public class KMAutoSuggestionManager: NSObject {
 }
 
 extension KMAutoSuggestionManager: UITextViewDelegate {
-    public func textView(
-        _ textView: UITextView,
-        shouldChangeTextIn range: NSRange,
-        replacementText _: String
-    ) -> Bool {
-        guard textView.text != nil else {
-            return true
-        }
-
-        // Check if deleting an autocomplete item, if yes then
-        // remove full item in one go and clear the attributes
-        //
-        // range.length == 1: Remove single character
-        // range.lowerBound < textView.selectedRange.lowerBound: Ignore trying to delete
-        //      the substring if the user is already doing so
-        if range.length == 1, range.lowerBound < textView.selectedRange.lowerBound {
-            // Backspace/removing text
-            let attribute = textView.attributedText
-                .attributes(at: range.lowerBound, longestEffectiveRange: nil, in: range)
-                .filter { $0.key == AutoCompleteItem.attributesKey }
-
-            if let isAutocomplete = attribute[AutoCompleteItem.attributesKey] as? String, !isAutocomplete.isEmpty {
-                // Remove the autocompleted substring
-                let lowerRange = NSRange(location: 0, length: range.location + 1)
-                textView.attributedText.enumerateAttribute(AutoCompleteItem.attributesKey, in: lowerRange, options: .reverse, using: { _, range, stop in
-
-                    // Only delete the first found range
-                    defer { stop.pointee = true }
-
-                    let emptyString = NSAttributedString(string: "", attributes: textView.typingAttributes)
-                    textView.attributedText = textView.attributedText.replacingCharacters(in: range, with: emptyString)
-                    textView.selectedRange = NSRange(location: range.location, length: 0)
-                })
-            }
-        }
-        return true
-    }
+//    public func textView(
+//        _ textView: UITextView,
+//        shouldChangeTextIn range: NSRange,
+//        replacementText _: String
+//    ) -> Bool {
+//        guard textView.text != nil else {
+//            return true
+//        }
+//
+//        // Check if deleting an autocomplete item, if yes then
+//        // remove full item in one go and clear the attributes
+//        //
+//        // range.length == 1: Remove single character
+//        // range.lowerBound < textView.selectedRange.lowerBound: Ignore trying to delete
+//        //      the substring if the user is already doing so
+//        if range.length == 1, range.lowerBound < textView.selectedRange.lowerBound {
+//            // Backspace/removing text
+//            let attribute = textView.attributedText
+//                .attributes(at: range.lowerBound, longestEffectiveRange: nil, in: range)
+//                .filter { $0.key == AutoCompleteItem.attributesKey }
+//
+//            if let isAutocomplete = attribute[AutoCompleteItem.attributesKey] as? String, !isAutocomplete.isEmpty {
+//                // Remove the autocompleted substring
+//                let lowerRange = NSRange(location: 0, length: range.location + 1)
+//                textView.attributedText.enumerateAttribute(AutoCompleteItem.attributesKey, in: lowerRange, options: .reverse, using: { _, range, stop in
+//
+//                    // Only delete the first found range
+//                    defer { stop.pointee = true }
+//
+//                    let emptyString = NSAttributedString(string: "", attributes: textView.typingAttributes)
+//                    textView.attributedText = textView.attributedText.replacingCharacters(in: range, with: emptyString)
+//                    textView.selectedRange = NSRange(location: range.location, length: 0)
+//                })
+//            }
+//        }
+//        return true
+//    }
 
     public func textViewDidChangeSelection(_ textView: UITextView) {
-        guard let result = textView.find(prefixes: autocompletionPrefixes) else {
-            cancelAndHide()
-            return
-        }
-
-        selection = (result.prefix, result.range, String(result.word.dropFirst(result.prefix.count)))
-        // Call delegate and get items
-        autocompletionDelegate?.didMatchTwo(prefix: result.prefix, message: String(result.word.dropFirst(result.prefix.count)))
+        print("pakka101 text \(textView.text)")
+//        guard let result = textView.find(prefixes: autocompletionPrefixes) else {
+//            cancelAndHide()
+//            return
+//        }
+//
+//        selection = (result.prefix, result.range, String(result.word.dropFirst(result.prefix.count)))
+//        // Call delegate and get items
+//        autocompletionDelegate?.didMatchTwo(prefix: result.prefix, message: String(result.word.dropFirst(result.prefix.count)))
     }
 
     func cellType(forPrefix prefix: String) -> AutoCompletionItemCell.Type {
