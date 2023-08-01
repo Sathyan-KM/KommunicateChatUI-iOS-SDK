@@ -7,17 +7,28 @@
 
 import Foundation
 
-public struct KMAutoSuggestionItem {
+
+public struct KMAutoSuggestionItem : Decodable {
     var placeholder: String
     var source: [String]
 }
 
-public struct KMAutoSuggestionSourceObject {
+
+public struct KMAutoSuggestionObjectItem: Decodable {
+    var placeholder: String
+    var source : [KMAutoSuggestionObjectSource]
+}
+
+public struct KMAutoSuggestionObjectSource : Decodable{
     var searchKey: String
     var message: String
 }
+public struct KMAutoSuggestionApiItem : Decodable {
+    var placeholder : String
+    var source : KMAutoSuggestionApiSource
+}
 
-public struct KMAutoSuggestionApiSource {
+public struct KMAutoSuggestionApiSource: Decodable {
     var url: String
     var headers: [String:String]
 }

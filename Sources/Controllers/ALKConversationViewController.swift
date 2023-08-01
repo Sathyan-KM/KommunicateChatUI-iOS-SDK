@@ -1008,7 +1008,7 @@ open class ALKConversationViewController: ALKBaseViewController, Localizable {
         autosuggestionManager.registerPrefix(
             prefix: MessageMention.Prefix,
             configuration: AutoCompleteItemConfiguration.memberMention,
-            cellType: MentionAutoCompleteCell.self
+            cellType: KMAutoSuggestionItemCell.self
         )
     }
 
@@ -1862,6 +1862,26 @@ open class ALKConversationViewController: ALKBaseViewController, Localizable {
             submitButtonResponse(request: request)
         }
     }
+    
+    func checkForAutoSuggestion(suggestion:String) {
+        guard let data = suggestion.data(using: .utf8) else {return}
+        
+        if let auto = try? JSONDecoder().decode(KMAutoSuggestionItem.self, from: data) {
+            print("Pakka101 list Source \(auto.source)")
+            chatBar.placeHolder.text = auto.placeholder
+        } else if let auto = try? JSONDecoder().decode(KMAutoSuggestionObjectItem.self, from: data) {
+            chatBar.placeHolder.text = auto.placeholder
+
+            print("Pakka101 list Source \(auto.source)")
+        } else if let auto = try? JSONDecoder().decode(KMAutoSuggestionApiItem.self, from: data) {
+            chatBar.placeHolder.text = auto.placeholder
+
+            print("Pakka101 list Source \(auto.source)")
+        } else {
+            print("Pakka101 Failed to fecth the source object")
+        }
+    }
+
 
     // Send Post Submitted Form Data As A Message
     func sendPostSubmittedFormDataAsMessage(message: String?, messageModel: ALKMessageViewModel, postFormData: [String: Any], chatContextData: [String: Any]!) {

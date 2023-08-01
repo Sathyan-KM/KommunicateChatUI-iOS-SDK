@@ -10,20 +10,23 @@ import UIKit
 
 extension ALKConversationViewController: AutoSuggestionDelegate {
     public func didMatchTwo(prefix: String, message: String) {
-        guard prefix == MessageMention.Prefix else { return }
+//        guard prefix == MessageMention.Prefix else { return }
+//
+//        let items = viewModel.fetchGroupMembersForAutocompletion()
+//        // update auto completion items based on the prefix
+//        if message.isEmpty {
+//            autosuggestionManager.items = items
+//        } else {
+//            autosuggestionManager.items = items.filter { $0.content.lowercased().contains(message) }
+//        }
 
-        let items = viewModel.fetchGroupMembersForAutocompletion()
-        // update auto completion items based on the prefix
-        if message.isEmpty {
-            autocompleteManager.items = items
-        } else {
-            autocompleteManager.items = items.filter { $0.content.lowercased().contains(message) }
-        }
 
+        let list = ["Aman", "Sathyan","Codemonk","pranay","himanshu", "abhijeet"]
+        autosuggestionManager.items = list
         // Reload and show the view
         UIView.performWithoutAnimation {
-            self.autocompleteManager.reloadAutoCompletionView()
+            self.autosuggestionManager.reloadAutoCompletionView()
         }
-        autocompleteManager.hide(false)
+        autosuggestionManager.hide(false)
     }
 }

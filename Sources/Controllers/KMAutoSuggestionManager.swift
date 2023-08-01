@@ -16,7 +16,7 @@ public protocol AutoSuggestionDelegate: AnyObject {
 }
 
 public protocol AutoSuggestionItemCell: UITableViewCell {
-    func updateView(item: AutoCompleteItem)
+    func updateView(item: String)
 }
 
 /// An autocomplete manager that is used for registering prefixes,
@@ -25,7 +25,9 @@ public class KMAutoSuggestionManager: NSObject {
     public let autocompletionView: UITableView
     public let textView: ALKChatBarTextView
     public weak var autocompletionDelegate: AutoSuggestionDelegate?
-    public var items = [AutoCompleteItem]()
+    public var items = [String]()
+    private var prefixCells: [String: AutoSuggestionItemCell.Type] = [:]
+
 
     // Prefix and entered word with its range in the text.
     typealias Selection = (
@@ -45,7 +47,6 @@ public class KMAutoSuggestionManager: NSObject {
     fileprivate var autoCompletionViewHeightConstraint: NSLayoutConstraint?
     private var autocompletionPrefixes: Set<String> = []
     private var prefixConfigurations: [String: AutoCompleteItemConfiguration] = [:]
-    private var prefixCells: [String: AutoCompletionItemCell.Type] = [:]
 
     public init(
         textView: ALKChatBarTextView,
@@ -60,10 +61,12 @@ public class KMAutoSuggestionManager: NSObject {
         autocompletionView.delegate = self
         autoCompletionViewHeightConstraint = autocompletionView.heightAnchor.constraint(equalToConstant: 0)
         autoCompletionViewHeightConstraint?.isActive = true
-        autocompletionView.register(DefaultAutoCompleteCell.self)
+        autocompletionView.register(DefaultAutoSuggestionCell.self)
+//        autocompletionView.register()
     }
 
-    public func registerPrefix<T: AutoCompletionItemCell>(
+    
+    public func registerPrefix<T: AutoSuggestionItemCell>(
         prefix: String,
         configuration: AutoCompleteItemConfiguration = AutoCompleteItemConfiguration(),
         cellType: T.Type
@@ -75,7 +78,7 @@ public class KMAutoSuggestionManager: NSObject {
             autocompletionView.register(cellType)
         }
     }
-
+    
     public func reloadAutoCompletionView() {
         autocompletionView.reloadData()
     }
@@ -172,7 +175,7 @@ extension KMAutoSuggestionManager: UITextViewDelegate {
 //    }
 
     public func textViewDidChangeSelection(_ textView: UITextView) {
-        print("pakka101 text \(textView.text)")
+//        print("pakka101 text \(textView.text)")
 //        guard let result = textView.find(prefixes: autocompletionPrefixes) else {
 //            cancelAndHide()
 //            return
@@ -180,10 +183,10 @@ extension KMAutoSuggestionManager: UITextViewDelegate {
 //
 //        selection = (result.prefix, result.range, String(result.word.dropFirst(result.prefix.count)))
 //        // Call delegate and get items
-//        autocompletionDelegate?.didMatchTwo(prefix: result.prefix, message: String(result.word.dropFirst(result.prefix.count)))
+        autocompletionDelegate?.didMatchTwo(prefix: "result.prefix", message: "")
     }
 
-    func cellType(forPrefix prefix: String) -> AutoCompletionItemCell.Type {
-        return prefixCells[prefix] ?? DefaultAutoCompleteCell.self
+    func cellType() -> AutoSuggestionItemCell.Type {
+        return DefaultAutoSuggestionCell.self
     }
 }

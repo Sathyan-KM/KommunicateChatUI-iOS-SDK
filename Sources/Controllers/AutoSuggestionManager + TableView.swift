@@ -24,17 +24,17 @@ extension KMAutoSuggestionManager: UITableViewDataSource, UITableViewDelegate {
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: UITableViewCell.reuseIdentifier)
         }
 
-        guard indexPath.row < items.count,
-              let selection = selection
+        guard indexPath.row < items.count
+//              let selection = selection
         else {
             return cell
         }
 
-        let autoCompleteCellType = cellType(forPrefix: selection.prefix)
+        let autoCompleteCellType = cellType()
         guard let autoCompleteCell = tableView.dequeueReusableCell(
             withIdentifier: autoCompleteCellType.reuseIdentifier,
             for: indexPath
-        ) as? AutoCompletionItemCell else {
+        ) as? AutoSuggestionItemCell else {
             return cell
         }
         autoCompleteCell.updateView(item: items[indexPath.row])
@@ -46,13 +46,14 @@ extension KMAutoSuggestionManager: UITableViewDataSource, UITableViewDelegate {
         let item = items[indexPath.row]
         guard let selection = selection else { return }
 
-        insert(item: item, at: selection.range, replace: selection)
+//        insert(item: item, at: selection.range, replace: selection)
         cancelAndHide()
     }
 }
 
-//public class DefaultAutoCompleteCell: UITableViewCell, AutoCompletionItemCell {
-//    public func updateView(item: AutoCompleteItem) {
-//        textLabel?.text = "\(item.content)"
-//    }
-//}
+public class DefaultAutoSuggestionCell: UITableViewCell, AutoSuggestionItemCell {
+    public func updateView(item: String) {
+        textLabel?.text = item
+        //"\(item.content)"
+    }
+}
